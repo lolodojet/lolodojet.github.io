@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Listinha de Afazeres </title>
+    <style>
+        body {
+          font-family: sans-serif;
+          padding: 30px;
+          background: #f0f0f0;
+        }
+    
+        h1 {
+          text-align: center;
+        }
+    
+        ul {
+          list-style: none;
+          padding: 0;
+          max-width: 300px;
+          margin: 20px auto;
+        }
+    
+        li {
+          padding: 15px;
+          background: #fff;
+          margin-bottom: 10px;
+          border: 1px solid #ccc;
+          cursor: grab;
+        }
+    
+        li.dragging {
+          opacity: 0.5;
+        }
+      </style>
+    </head>
+    <body>
+    
+      <h1>Minha Lista de Tarefas </h1>
+      <ul id="lista">
+        <li draggable="true">Comprar pão</li>
+        <li draggable="true">Estudar javinha</li>
+        <li draggable="true">Jogar Valorant</li>
+        <li draggable="true">Assistir TheLastOfUs</li>
+      </ul>
+    
+      <script>
+        const itens = document.querySelectorAll('#lista li');
+        let itemArrastado = null;
+    
+        itens.forEach(item => {
+          item.addEventListener('dragstart', () => {
+            itemArrastado = item;
+            item.classList.add('dragging');
+          });
+    
+          item.addEventListener('dragend', () => {
+            item.classList.remove('dragging');
+          });
+        });
+    
+        const lista = document.getElementById('lista');
+    
+        lista.addEventListener('dragover', e => {
+          e.preventDefault();
+          const itemAbaixo = pegarItemAbaixo(e.clientY);
+          if (itemAbaixo == null) {
+            lista.appendChild(itemArrastado);
+          } else {
+            lista.insertBefore(itemArrastado, itemAbaixo);
+          }
+        });
+    
+        function pegarItemAbaixo(y) {
+          const itensSemArrastado = [...lista.querySelectorAll('li:not(.dragging)')];
+          return itensSemArrastado.find(item => {
+            const box = item.getBoundingClientRect();
+            return y < box.top + box.height / 2;
+          });
+        }
+      </script>
+    
+    </body>
+    </html>
